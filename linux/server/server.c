@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     // create the server socket
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (server_socket == INVALID_SOCKET) {
+    if (server_socket < 0) {
         perror("Socket failed: ");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     server_address.sin_addr.s_addr = INADDR_ANY;
 
     // bind the socket to our specified IP and port
-    if ((bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address))) == SOCKET_ERROR) {
+    if ((bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address))) < 0) {
         perror("Bind failed");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     puts("Waiting for incoming connections...");
 
     int client_socket;
-    if (client_socket = accept(server_socket, NULL, NULL) == INVALID_SOCKET) {
+    if (client_socket = accept(server_socket, NULL, NULL) < 0) {
         perror("Accept failed");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;

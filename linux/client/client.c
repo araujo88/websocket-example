@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     // type: SOCK_STREAM (TCP protocol) / SOCK_DGRAM (UDP protocol)
     // protocol: Internet Protocol (IP) - 0
 
-    if (network_socket == INVALID_SOCKET) {
+    if (network_socket < 0) {
         perror("Socket creation error");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -46,16 +46,16 @@ int main(int argc, char *argv[])
 
     // Receive data from the server
     char *buffer; // server response
-    if ((recv(network_socket, buffer, sizeof(buffer), 0)) == SOCKET_ERROR) {
+    if ((recv(network_socket, buffer, sizeof(buffer), 0)) < 0) {
         perror("Receive error:");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
     }
 
     // print the server's response
-    printf("The server sent the data: %s\n", buffer);
+    printf("The server sent the data: %s\n", &buffer);
 
     // close the socket
-    close(socket); // unix
+    close(network_socket);
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <string.h>
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -23,18 +24,17 @@ int main(int argc, char *argv[])
 	if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
 	{
 		printf("Failed. Error Code : %d",WSAGetLastError());
-		return 1;
+        WSACleanup();
+		return EXIT_FAILURE;
 	}
-    printf("Initialized.\n");
-
-    // server message
-    char *server_message = "You have reached the server!";
+    puts("Initialized!");
 
     // create the server socket
-    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if (server_socket == INVALID_SOCKET) {
         printf("Could not create socket: %d\n", WSAGetLastError());
+        WSACleanup();
         return EXIT_FAILURE;
     }
 
@@ -42,14 +42,15 @@ int main(int argc, char *argv[])
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
-    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     // bind the socket to our specified IP and port
     if ((bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address))) == SOCKET_ERROR) {
         printf("Binding failed: %d\n", WSAGetLastError());
+        WSACleanup();
         return EXIT_FAILURE;
     }
-    puts("Binding done");
+    puts("Binding done!");
 
     // listen for connections
     listen(server_socket, 5);
@@ -57,16 +58,18 @@ int main(int argc, char *argv[])
     // accept the connection
     puts("Waiting for incoming connections...");
 
-    int client_socket;
+    SOCKET client_socket;
     if (client_socket = accept(server_socket, NULL, NULL) == INVALID_SOCKET) {
         printf("Error accepting connections: %d\n", WSAGetLastError());
+        WSACleanup();
         return EXIT_FAILURE;
     }
-    puts("Connection accepted");
+    puts("Connection accepted!");
 
     // send the message
+    char *server_message = "You have reached the server!";
     send(client_socket, server_message, sizeof(server_message), 0);
-    printf("Message sent!\n");
+    puts("Message sent!");
 
     // close the socket
     closesocket(server_socket);

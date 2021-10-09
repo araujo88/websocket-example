@@ -6,13 +6,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define PORT 9003
+#define PORT 9002
 
 int main(int argc, char *argv[]) 
 {
-    // server message
-    char server_message[256] = "You have reached the server!";
-
     // create the server socket
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -43,7 +40,7 @@ int main(int argc, char *argv[])
     puts("Waiting for incoming connections...");
 
     int client_socket;
-    if (client_socket = accept(server_socket, NULL, NULL) < 0) {
+    if ((client_socket = accept(server_socket, NULL, NULL)) < 0) {
         perror("Accept failed");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -51,6 +48,7 @@ int main(int argc, char *argv[])
     puts("Connection accepted");
 
     // send the message
+    char server_message[256] = "You have reached the server!";
     send(client_socket, &server_message, sizeof(server_message), 0);
     printf("Message sent!\n");
 

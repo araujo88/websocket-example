@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
         WSACleanup();
 		return EXIT_FAILURE;
 	}
-    printf("Initialized.\n");
+    puts("Initialized!");
 
     SOCKET network_socket; // create a socket
     // network_socket = socket(domain, type, protocol)

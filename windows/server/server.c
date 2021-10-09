@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     puts("Waiting for incoming connections...");
 
     SOCKET client_socket;
-    if (client_socket = accept(server_socket, NULL, NULL) == INVALID_SOCKET) {
+    if ((client_socket = accept(server_socket, NULL, NULL)) == INVALID_SOCKET) {
         printf("Error accepting connections: %d\n", WSAGetLastError());
         WSACleanup();
         return EXIT_FAILURE;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
     // send the message
     char *server_message = "You have reached the server!";
-    send(client_socket, server_message, sizeof(server_message), 0);
+    send(client_socket, server_message, strlen(server_message), 0);
     puts("Message sent!");
 
     // close the socket

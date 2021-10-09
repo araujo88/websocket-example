@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define PORT 9002
+#define PORT 9003
 
 int main(int argc, char *argv[]) 
 {
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
     // type: SOCK_STREAM (TCP protocol) / SOCK_DGRAM (UDP protocol)
     // protocol: Internet Protocol (IP) - 0
 
-    if (network_socket == INVALID_SOCKET) {
+    if (network_socket < 0) {
         perror("Socket creation error");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -27,12 +28,6 @@ int main(int argc, char *argv[])
     server_address.sin_family = AF_INET; // specifies protocol IPv4
     server_address.sin_port = htons(PORT); // specifies port
     server_address.sin_addr.s_addr = INADDR_ANY;
-
-    if (inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr) <= 0 ) {
-        perror("Invalid address / Address not supported");
-        printf("Error code: %d\n", errno);
-        return EXIT_FAILURE;
-    }
 
     // connection 
     int connection_status = connect(network_socket, (struct sockaddr *) &server_address, sizeof(server_address));
@@ -45,8 +40,8 @@ int main(int argc, char *argv[])
     }
 
     // Receive data from the server
-    char *buffer; // server response
-    if ((recv(network_socket, buffer, sizeof(buffer), 0)) == SOCKET_ERROR) {
+    char buffer[256]; // server response
+    if ((recv(network_socket, &buffer, sizeof(buffer), 0)) < 0) {
         perror("Receive error:");
         printf("Error code: %d\n", errno);
         return EXIT_FAILURE;
@@ -56,6 +51,6 @@ int main(int argc, char *argv[])
     printf("The server sent the data: %s\n", buffer);
 
     // close the socket
-    close(socket); // unix
+    close(network_socket);
     return 0;
 }

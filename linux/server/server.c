@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <errno.h> 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define PORT 9002
+#define PORT 9003
 
 int main(int argc, char *argv[]) 
 {
     // server message
-    char *server_message = "You have reached the server!";
+    char server_message[256] = "You have reached the server!";
 
     // create the server socket
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,10 +51,10 @@ int main(int argc, char *argv[])
     puts("Connection accepted");
 
     // send the message
-    send(client_socket, server_message, sizeof(server_message), 0);
+    send(client_socket, &server_message, sizeof(server_message), 0);
     printf("Message sent!\n");
 
     // close the socket
-    close(server_socket); // unix
+    close(server_socket);
     return 0;
 }

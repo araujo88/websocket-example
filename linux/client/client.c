@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) 
 {
     int network_socket; // create a socket
-    // network_socket = socket(domain, type, protocol)
+    // network_socket = socket(family, type, protocol)
     network_socket = socket(AF_INET, SOCK_STREAM, 0);
     // domain: AF_INET (IPv4 protocols)
     // type: SOCK_STREAM (stream socket)
